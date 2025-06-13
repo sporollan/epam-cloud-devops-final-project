@@ -21,8 +21,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./services/application
+          file: ./services/application/Dockerfile
           push: true
           tags: |
             ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/sporollan-application:latest
