@@ -2,7 +2,8 @@ on:
   push:
     branches:
       - main
-
+    paths:
+      - 'services/application/**'
 jobs:
   build-and-push:
     name: Build & Push Docker Image (main)
