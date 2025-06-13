@@ -25,5 +25,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/fastapi-app:latest
-            ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/fastapi-app:${{ github.sha }}
+            ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/sporollan-application:latest
+            ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/sporollan-application:${{ github.sha }}
