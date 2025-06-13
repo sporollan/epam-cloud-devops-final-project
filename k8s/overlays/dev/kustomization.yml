@@ -1,0 +1,22 @@
+resources:
+  - ../../base
+
+namePrefix: dev-
+
+configMapGenerator:
+  - name: fastapi-config
+    literals:
+      - greeting_msg=Hello from Dev
+
+images:
+  - name: placeholder/image
+    newName: sporollan/sporollan-application
+    newTag: dev
+patches:
+  - target:
+      kind: Ingress
+      name: fastapi-ingress
+    patch: |
+      - op: replace
+        path: /spec/rules/0/host
+        value: epamproject
