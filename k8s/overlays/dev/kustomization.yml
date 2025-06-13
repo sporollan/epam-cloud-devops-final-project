@@ -12,11 +12,3 @@ images:
   - name: placeholder/image
     newName: sporollan/sporollan-application
     newTag: dev
-patches:
-  - target:
-      kind: Ingress
-      name: fastapi-ingress
-    patch: |
-      - op: replace
-        path: /spec/rules/0/host
-        value: epamproject
