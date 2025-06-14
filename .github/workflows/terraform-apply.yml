@@ -37,10 +37,10 @@ jobs:
         working-directory: terraform
         run: terraform apply -auto-approve
 
-      - name: Setup kubectl
-        uses: actions/setup-kubectl@v3
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
         with:
-          version: 'latest'
+          version: 'latest' 
 
       - name: Update EKS
         run: |

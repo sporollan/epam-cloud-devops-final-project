@@ -48,12 +48,14 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Wait for EKS cluster to be ACTIVE
+        run: |
+          aws eks wait cluster-active --name $CLUSTER_NAME --region $AWS_REGION
+
       # 5) Fetch kubeconfig for EKS cluster
       - name: Update kubeconfig for EKS
         run: |
-          aws eks update-kubeconfig \
-            --name $CLUSTER_NAME \
-            --region $AWS_REGION
+          aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
 
       # 6) Apply and Trigger rolling‑restart so each Pod pulls the new :latest image
       - name: Restart Kubernetes Deployment
