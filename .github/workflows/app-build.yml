@@ -2,28 +2,62 @@ on:
   push:
     branches:
       - main
-
+    paths:
+      - 'services/application/**'
+      - 'k8s/**'
+env:
+  IMAGE_NAME: ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/sporollan-application
+  CLUSTER_NAME: my-app
+  AWS_REGION: us-east-1
 jobs:
   build-and-push:
-    name: Build & Push Docker Image (main)
+    name: Build & Push Docker Image
     runs-on: ubuntu-latest
     steps:
+      # 1) Set up
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Log in to Docker registry
         uses: docker/login-action@v2
         with:
           registry: ${{ secrets.REGISTRY_URL }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-
+      # 2) Build and push
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./services/application
+          file: ./services/application/Dockerfile
           push: true
           tags: |
             ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/sporollan-application:latest
             ${{ secrets.REGISTRY_URL }}/${{ secrets.REGISTRY_USERNAME }}/sporollan-application:${{ github.sha }}
+
+      # 3) Configure AWS credentials for EKS access
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ env.AWS_REGION }}
+
+      # 4) Install kubectl
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      # 5) Fetch kubeconfig for EKS cluster
+      - name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig \
+            --name $CLUSTER_NAME \
+            --region $AWS_REGION
+
+      # 6) Apply and Trigger rolling‑restart so each Pod pulls the new :latest image
+      - name: Restart Kubernetes Deployment
+        run: |
+          kubectl apply -k "k8s/overlays/prod"
+          kubectl rollout restart deployment prod-fastapi-app
+          kubectl rollout status deployment prod-fastapi-app

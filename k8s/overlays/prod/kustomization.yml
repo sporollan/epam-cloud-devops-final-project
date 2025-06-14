@@ -12,13 +12,3 @@ images:
   - name: placeholder/image
     newName: sporollan/sporollan-application
     newTag: latest
-
-patches:
-  - target:
-      kind: Ingress
-      name: fastapi-ingress
-    patch: |
-      - op: replace
-        path: /spec/rules/0/host
-        value: <EKS_LOAD_BALANCER_IP>
-
