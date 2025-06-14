@@ -42,3 +42,4 @@ venv
 
 # local
 *bak
+util/*bucket*
