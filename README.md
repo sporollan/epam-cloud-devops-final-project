@@ -9,7 +9,9 @@
 ### Description
 - Terraform managed infrastructure to expose FastAPI application.
 - Uses AWS EKS to manage Nodes.
+- Using Kustomize to manange dev and prod environments.
 - While running retuns greeting on /greeting endpoint through LB dns.
+- Returns different greeting based on environment.
 - Pipelines to test and deploy.
 
 ## Setup Instructions
@@ -52,7 +54,7 @@
 ### System Overview
 AWS EKS-based container platform with Application Load Balancer
 ### Architecture Diagram
-![alt text](image.png)
+![alt text](images/image.png)
 ### Component Details
 
 #### Networking
@@ -96,3 +98,9 @@ Two separate CI/CD pipelines for application and infrastructure deployment to AW
 #### 2. Infrastructure Pipeline
 - **Validate:** Init, validate, and plan on PR
 - **Build:** Apply on Push to Main, after successfull PR merge.
+
+## Working example
+- **Load balancer on Console**
+![alt text](images/image-1.png)
+- **Accessing Endpoint**
+![alt text](images/image-2.png)
