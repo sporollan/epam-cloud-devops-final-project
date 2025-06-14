@@ -3,7 +3,8 @@ on:
     branches:
       - main
       - develop
-
+    paths:
+      - 'services/application/**'
 jobs:
   test:
     name: Run application unit tests
