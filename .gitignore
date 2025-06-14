@@ -39,4 +39,6 @@ terraform.rc
 # Python
 __pycache__
 venv
-bak
+
+# local
+*bak
