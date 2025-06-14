@@ -6,14 +6,16 @@ on:
       - main
     paths:
       - 'terraform/**'
+      - 'k8s/**'
 
 jobs:
   apply:
-    name: Apply Terraform
+    name: Apply Terraform and deploy
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID:   ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-east-1
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -34,3 +36,14 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform
         run: terraform apply -auto-approve
+
+      - name: Setup kubectl
+        uses: actions/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Update EKS
+        run: |
+          aws eks update-kubeconfig --region us-east-1 --name my-app
+          kubectl apply -k ./k8s/overlays/prod
+
