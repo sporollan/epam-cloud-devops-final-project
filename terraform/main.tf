@@ -580,24 +580,29 @@ resource "aws_iam_role_policy_attachment" "aws_lb_controller" {
 }
 
 # Data source to get node group instances
-data "aws_instances" "node_group_instances" {
-  instance_tags = {
-    "eks:nodegroup-name" = aws_eks_node_group.main.node_group_name
-    "eks:cluster-name"   = aws_eks_cluster.main.name
-  }
-  
-  instance_state_names = ["running"]
-  
-  depends_on = [aws_eks_node_group.main]
-}
+#data "aws_instances" "node_group_instances" {
+#  instance_tags = {
+#    "eks:nodegroup-name" = aws_eks_node_group.main.node_group_name
+#    "eks:cluster-name"   = aws_eks_cluster.main.name
+#  }
+#  
+#  instance_state_names = ["running"]
+#  
+#  depends_on = [aws_eks_node_group.main]
+#}
 
 # Register instances with target group automatically
-resource "aws_lb_target_group_attachment" "node_group_instances" {
-  count = length(data.aws_instances.node_group_instances.ids)
-  
-  target_group_arn = aws_lb_target_group.main.arn
-  target_id        = data.aws_instances.node_group_instances.ids[count.index]
-  port             = 30080
+#resource "aws_lb_target_group_attachment" "node_group_instances" {
+#  count = length(data.aws_instances.node_group_instances.ids)
+#  
+#  target_group_arn = aws_lb_target_group.main.arn
+#  target_id        = data.aws_instances.node_group_instances.ids[count.index]
+#  port             = 30080
+#}
+
+resource "aws_autoscaling_attachment" "asg_attachment" {
+  autoscaling_group_name = aws_eks_node_group.main.resources[0].autoscaling_groups[0].name
+  lb_target_group_arn    = aws_lb_target_group.main.arn
 }
 
 # Outputs
