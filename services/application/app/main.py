@@ -4,7 +4,7 @@ from fastapi import FastAPI
 app = FastAPI()
 
 def get_greeting():
-    return os.getenv("GREETING_MSG", "Hello, World!")
+    return os.getenv("GREETING_MSG", "")
 
 @app.get("/greeting")
 async def greeting():
