@@ -1,0 +1,14 @@
+resources:
+  - ../../base
+
+namePrefix: prod-
+
+configMapGenerator:
+  - name: fastapi-config
+    literals:
+      - greeting_msg=Hello from Prod
+
+images:
+  - name: placeholder/image
+    newName: sporollan/sporollan-application
+    newTag: latest
