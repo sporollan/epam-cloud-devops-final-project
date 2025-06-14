@@ -6,6 +6,11 @@
 3. [Pipelines Description](#pipelines-description)
 
 ---
+### Description
+- Terraform managed infrastructure to expose FastAPI application.
+- Uses AWS EKS to manage Nodes.
+- While running retuns greeting on /greeting endpoint through LB dns.
+- Pipelines to test and deploy.
 
 ## Setup Instructions
 
