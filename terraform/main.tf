@@ -200,10 +200,10 @@ resource "aws_security_group" "alb" {
   }
 
   egress {
-    from_port   = 30080  # Allow outbound to NodePort
+    from_port   = 30080
     to_port     = 30080
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]  # Only to VPC
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {
@@ -357,10 +357,10 @@ resource "aws_lb" "main" {
 # Target Group for ALB - Routes to NodePort
 resource "aws_lb_target_group" "main" {
   name        = "${var.cluster_name}-tg"
-  port        = 30080  # NodePort where your service is exposed
+  port        = 30080 
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
-  target_type = "instance"  # Target EKS nodes directly
+  target_type = "instance"
 
   health_check {
     enabled             = true
@@ -368,8 +368,8 @@ resource "aws_lb_target_group" "main" {
     unhealthy_threshold = 2
     timeout             = 5
     interval            = 30
-    path                = "/greeting"  # Your actual API endpoint
-    port                = "30080"      # Health check on NodePort
+    path                = "/greeting"
+    port                = "30080"    
     matcher             = "200"
   }
 
@@ -586,27 +586,6 @@ resource "aws_iam_role_policy_attachment" "aws_lb_controller" {
   role       = aws_iam_role.aws_lb_controller.name
   policy_arn = aws_iam_policy.aws_lb_controller.arn
 }
-
-# Data source to get node group instances
-#data "aws_instances" "node_group_instances" {
-#  instance_tags = {
-#    "eks:nodegroup-name" = aws_eks_node_group.main.node_group_name
-#    "eks:cluster-name"   = aws_eks_cluster.main.name
-#  }
-#  
-#  instance_state_names = ["running"]
-#  
-#  depends_on = [aws_eks_node_group.main]
-#}
-
-# Register instances with target group automatically
-#resource "aws_lb_target_group_attachment" "node_group_instances" {
-#  count = length(data.aws_instances.node_group_instances.ids)
-#  
-#  target_group_arn = aws_lb_target_group.main.arn
-#  target_id        = data.aws_instances.node_group_instances.ids[count.index]
-#  port             = 30080
-#}
 
 resource "aws_autoscaling_attachment" "asg_attachment" {
   autoscaling_group_name = aws_eks_node_group.main.resources[0].autoscaling_groups[0].name
