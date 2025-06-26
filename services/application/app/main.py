@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from logger import logger
-
+# 1
 app = FastAPI()
 
 def get_greeting():
