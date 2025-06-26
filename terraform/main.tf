@@ -218,7 +218,7 @@ resource "aws_security_group" "alb" {
   }
 }
 
-# IAM Role for EKS Cluster
+# IAM Role for EKS Cluster 1
 resource "aws_iam_role" "eks_cluster" {
   name = "${var.cluster_name}-cluster-role"
 
